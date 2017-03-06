@@ -10,44 +10,50 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.epicodus.bitxbit.ui.LoginActivity">
 
-    <EditText
+    <TextView
+        android:layout_marginTop="16dp"
+        android:text="or click here to create an account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/button_signIn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="84dp"
-        android:id="@+id/editText"
-        android:singleLine="true" />
+        android:id="@+id/textView_signUp" />
+
+    <Button
+        android:text="Sign In"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_signIn"
+        android:layout_below="@+id/editText_password"
+        android:layout_alignRight="@+id/editText_password"
+        android:layout_alignEnd="@+id/editText_password"
+        android:backgroundTint="@color/colorLoginButton"
+        android:layout_alignLeft="@+id/editText_password"
+        android:layout_alignStart="@+id/editText_password" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_below="@+id/editText"
-        android:layout_alignLeft="@+id/editText"
-        android:layout_alignStart="@+id/editText"
-        android:singleLine="true" />
+        android:id="@+id/editText_password"
+        android:singleLine="true"
+        android:layout_below="@+id/editText_email"
+        android:layout_alignLeft="@+id/editText_email"
+        android:layout_alignStart="@+id/editText_email"
+        android:textColorLink="@color/colorLoginAccent"
+        android:hint="password" />
 
-    <TextView
-        android:text="or click here to create an account"
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button2"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/textView" />
-
-    <Button
-        android:text="Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button2"
-        android:layout_below="@+id/editText2"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView"
-        android:layout_alignRight="@+id/editText2"
-        android:layout_alignEnd="@+id/editText2" />
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:layout_marginTop="84dp"
+        android:id="@+id/editText_email"
+        android:singleLine="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/textView_signUp"
+        android:layout_alignEnd="@+id/textView_signUp"
+        android:hint="email" />
 </RelativeLayout>
