@@ -37,12 +37,13 @@
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/editText_password"
-        android:singleLine="true"
         android:layout_below="@+id/editText_email"
         android:layout_alignLeft="@+id/editText_email"
         android:layout_alignStart="@+id/editText_email"
         android:textColorLink="@color/colorLoginAccent"
-        android:hint="password" />
+        android:backgroundTint="@color/colorLoginAccent"
+        android:hint="password"
+        android:maxLines="1" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -51,9 +52,11 @@
         android:ems="10"
         android:layout_marginTop="84dp"
         android:id="@+id/editText_email"
-        android:singleLine="true"
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/textView_signUp"
         android:layout_alignEnd="@+id/textView_signUp"
-        android:hint="email" />
+        android:backgroundTint="@color/colorLoginAccent"
+        android:hint="email"
+        android:maxLines="1"
+        />
 </RelativeLayout>
