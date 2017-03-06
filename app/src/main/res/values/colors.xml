@@ -6,4 +6,7 @@
     <color name="colorLoginAccent">#BA68C8</color>
     <color name="colorLoginButton">#9C27B0</color>
     <color name="colorLogoutButton">#9C27B0</color>
+    <color name="colorWorkoutMain">#D50000</color>
+    <color name="colorRoutineMain">#0D47A1</color>
+    <color name="colorActionMain">#FFFFFF</color>
 </resources>

@@ -5,21 +5,77 @@
     android:id="@+id/activity_menu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.epicodus.bitxbit.ui.MenuActivity">
 
     <android.support.design.widget.FloatingActionButton
         app:fabSize="normal"
-        android:src="@drawable/ic_clear_white_24dp"
-        app:backgroundTint="@color/colorLogoutButton"
+        android:src="@drawable/ic_save_white_24dp"
+        app:backgroundTint="@color/colorWorkoutMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_marginRight="16dp"
+        android:id="@+id/FAB_Save"
+        android:layout_toLeftOf="@+id/FAB_Clear"
+        android:layout_alignBottom="@+id/FAB_logout" />
+
+    <android.support.design.widget.FloatingActionButton
+        app:fabSize="normal"
+        android:src="@drawable/ic_clear_all_white_24dp"
+        app:backgroundTint="@color/colorWorkoutMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:id="@+id/FAB_Clear"
+        android:layout_toLeftOf="@+id/FAB_logout"
+        android:layout_alignBottom="@+id/FAB_logout" />
+
+    <android.support.design.widget.FloatingActionButton
+        app:fabSize="normal"
+        android:src="@drawable/ic_clear_white_24dp"
+        app:backgroundTint="@color/colorWorkoutMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
         android:id="@+id/FAB_logout" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:entries="@array/items"
+        android:layout_toLeftOf="@+id/FAB_Save"
+        android:layout_toStartOf="@+id/FAB_Save"
+        android:layout_alignBottom="@+id/FAB_Save"
+        android:layout_alignTop="@+id/FAB_Save" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/spinner"
+        android:weightSum="2">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="0dp"
+            android:id="@+id/RecyclerView_From"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="0dp"
+            android:id="@+id/RecyclerView_To"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
 
 </RelativeLayout>

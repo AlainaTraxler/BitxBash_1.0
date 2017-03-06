@@ -1,9 +1,11 @@
 package com.epicodus.bitxbit.ui;
 
+import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.epicodus.bitxbit.AuthListenerActivity;
 import com.epicodus.bitxbit.R;
@@ -13,6 +15,8 @@ import butterknife.ButterKnife;
 
 public class MenuActivity extends AuthListenerActivity implements View.OnClickListener{
     @BindView(R.id.FAB_logout) FloatingActionButton mFAB_Logout;
+//    @BindView(R.id.textView_Workout) TextView mTextView_Workout;
+//    @BindView(R.id.textView_Routine) TextView mTextView_Routine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
