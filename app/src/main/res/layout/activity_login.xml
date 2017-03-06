@@ -27,23 +27,10 @@
         android:layout_below="@+id/editText_password"
         android:layout_alignRight="@+id/editText_password"
         android:layout_alignEnd="@+id/editText_password"
+        android:textColor="#FFFFFF"
         android:backgroundTint="@color/colorLoginButton"
         android:layout_alignLeft="@+id/editText_password"
         android:layout_alignStart="@+id/editText_password" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/editText_password"
-        android:layout_below="@+id/editText_email"
-        android:layout_alignLeft="@+id/editText_email"
-        android:layout_alignStart="@+id/editText_email"
-        android:textColorLink="@color/colorLoginAccent"
-        android:backgroundTint="@color/colorLoginAccent"
-        android:hint="password"
-        android:maxLines="1" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -59,4 +46,19 @@
         android:hint="email"
         android:maxLines="1"
         />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/editText_password"
+        android:layout_below="@+id/editText_email"
+        android:layout_alignLeft="@+id/editText_email"
+        android:layout_alignStart="@+id/editText_email"
+        android:textColorLink="@color/colorLoginAccent"
+        android:backgroundTint="@color/colorLoginAccent"
+        android:hint="password"
+        android:maxLines="1" />
+
 </RelativeLayout>

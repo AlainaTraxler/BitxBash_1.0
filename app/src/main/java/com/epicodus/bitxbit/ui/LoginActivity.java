@@ -48,7 +48,6 @@ public class LoginActivity extends AuthListenerActivity implements View.OnClickL
                 signIn(email, password);
             }
         }else {
-
             if(isEmailValid(email) && isPasswordValid(password)){
                 createAccount(email, password);
             }

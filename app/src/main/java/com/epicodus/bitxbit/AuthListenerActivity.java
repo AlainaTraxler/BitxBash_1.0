@@ -38,6 +38,7 @@ public class AuthListenerActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+                    Log.d("Activity Name:", mActivityName);
                     if(mActivityName.equals("LoginActivity")){
                         startActivity(new Intent(mContext, MenuActivity.class));
                     }
@@ -50,12 +51,16 @@ public class AuthListenerActivity extends AppCompatActivity {
                 // ...
             }
         };
+
+//        if(mAuth.getCurrentUser() != null){
+//            Log.d("User name:", mAuth.getCurrentUser().getEmail());
+//            mAuth.notify();
+//        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.signOut();
 
         mAuth.addAuthStateListener(mAuthListener);
     }
