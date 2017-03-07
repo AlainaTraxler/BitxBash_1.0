@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Exercise Name"
+                android:id="@+id/ExerciseName"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Drag"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_drag_handle_white_24dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Split"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/Drag"
+                android:src="@drawable/ic_layers_white_24dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ExerciseName"
+                android:id="@+id/linearLayout"
+                android:layout_alignRight="@id/ExerciseName"
+                >
+
+                <EditText
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:imeOptions="flagNoExtractUi"
+                    android:ems="10"
+                    android:id="@+id/Sets"
+                    android:gravity="center"
+                    android:layout_alignTop="@+id/Reps"
+                    android:layout_toLeftOf="@+id/textView2"
+                    android:layout_toStartOf="@+id/textView2"
+                    android:hint="sets"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="x"
+                    android:id="@+id/X"
+                    android:layout_alignTop="@+id/Pipe"
+                    android:layout_toLeftOf="@+id/Reps"
+                    android:layout_toStartOf="@+id/Reps" />
+
+                <EditText
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:imeOptions="flagNoExtractUi"
+                    android:id="@+id/Reps"
+                    android:layout_alignBottom="@+id/Weight"
+                    android:layout_toLeftOf="@+id/Pipe"
+                    android:gravity="center"
+                    android:hint="reps" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="\@"
+                    android:id="@+id/At"
+                    android:layout_alignTop="@+id/Weight"
+                    android:layout_toLeftOf="@+id/Weight"
+
+                    android:layout_toStartOf="@+id/Weight" />
+
+                <EditText
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:id="@+id/Weight"
+                    android:gravity="center"
+                    android:imeOptions="flagNoExtractUi"
+                    android:layout_below="@id/ExerciseName"
+                    android:layout_alignParentRight="true"
+                    android:hint="lbs" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ExerciseName"
+                android:layout_alignRight="@id/ExerciseName">
+
+                <EditText
+                    android:layout_height="wrap_content"
+                    android:layout_width="75dp"
+                    android:imeOptions="flagNoExtractUi"
+                    android:gravity="center"
+                    android:inputType="time"
+                    android:id="@+id/Time"
+                    android:hint="0:00" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="x"
+                    android:id="@+id/Ex" />
+
+                <EditText
+                    android:layout_width="75dp"
+                    android:imeOptions="flagNoExtractUi|"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Distance"
+                    android:hint="miles" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

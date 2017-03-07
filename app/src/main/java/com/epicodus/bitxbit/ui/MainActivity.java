@@ -20,6 +20,7 @@ import com.epicodus.bitxbit.Constants;
 import com.epicodus.bitxbit.R;
 import com.epicodus.bitxbit.adapters.FirebaseFromExerciseViewHolder;
 import com.epicodus.bitxbit.adapters.FromExerciseAdapter;
+import com.epicodus.bitxbit.adapters.ToExerciseAdapter;
 import com.epicodus.bitxbit.models.Exercise;
 import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -43,12 +44,14 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     @BindView(R.id.FAB_Refresh) FloatingActionButton mFAB_Refresh;
     @BindView(R.id.searchView) SearchView mSearchView;
     @BindView(R.id.RecyclerView_From) RecyclerView mRecyclerView_From;
+    @BindView(R.id.RecyclerView_To) RecyclerView mRecyclerView_To;
     @BindView(R.id.spinner) Spinner mSpinner;
 
-    private FirebaseRecyclerAdapter mFromExerciseFirebaseAdapter;
     private ArrayList<Exercise> mFromExerciseList = new ArrayList<Exercise>();
+    private ArrayList<Exercise> mToExerciseList = new ArrayList<Exercise>();
     private ArrayList<Exercise> mFilteredFromExerciseList = new ArrayList<Exercise>();
     private FromExerciseAdapter mFromExerciseAdapter;
+    private ToExerciseAdapter mToExerciseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        setUpToExerciseAdapter();
         mSpinner.setOnItemSelectedListener(this);
         setFromItemTouchListener();
 
@@ -79,7 +83,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mFAB_Logout.setOnClickListener(this);
         mFAB_Seed.setOnClickListener(this);
         mFAB_Refresh.setOnClickListener(this);
-
     }
 
     @Override
@@ -135,11 +138,17 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mRecyclerView_From.setAdapter(mFromExerciseAdapter);
     }
 
+    private void setUpToExerciseAdapter(){
+        mToExerciseAdapter = new ToExerciseAdapter(getApplicationContext(), mToExerciseList);
+        mRecyclerView_To.setHasFixedSize(true);
+        mRecyclerView_To.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView_To.setAdapter(mToExerciseAdapter);
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if(i == 0){
             if(mFromExerciseList.size() == 0){
-                Log.d(">>>>>", "Triggering first time fetch");
                 fetchExercises();
             }else{
                 setUpFromExerciseAdapter(null);
@@ -165,6 +174,14 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 Log.d("Swiped: ", mFilteredFromExerciseList.get(viewHolder.getAdapterPosition()).getName());
+
+                Exercise exercise = new Exercise();
+                exercise = exercise.clone(mFilteredFromExerciseList.get(viewHolder.getAdapterPosition()));
+
+                mToExerciseList.add(exercise);
+                mToExerciseAdapter.notifyItemInserted(mFromExerciseList.size());
+                Log.d("ToExercise size: ", String.valueOf(mToExerciseList.size()));
+
                 mFromExerciseAdapter.notifyDataSetChanged();
             }
         };
@@ -222,5 +239,114 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                 }
             }
         }
+    }
+
+    //----- Validation functions -----//
+    public Boolean validateName(String name) {
+        if (name.equals("")) {
+            Toast.makeText(mContext, "Please name this routine", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    public Boolean validateSelected(ArrayList<Exercise> exercises){
+        if(exercises.size() == 0){
+            Toast.makeText(mContext, "No exercises selected", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    public Boolean validateFields(ArrayList<Exercise> exercises){
+        for(int i = 0; i < exercises.size(); i++){
+            Exercise exercise = exercises.get(i);
+            if(exercise.getType().equals(Constants.TYPE_WEIGHT)){
+                if(exercise.getSets() <= 0){
+                    Toast.makeText(mContext, "Please enter a valid number of sets for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
+                if(exercise.getReps() <= 0){
+                    Toast.makeText(mContext, "Please enter a valid number of reps for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
+                if(exercise.getWeight() <= 0){
+                    Toast.makeText(mContext, "Please enter a valid weight for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }else if(exercise.getType().equals(Constants.TYPE_AEROBIC)){
+                String time = exercise.getTime();
+                if(time.length() == 0 || !time.contains(":")){
+                    Toast.makeText(MainActivity.this, "Please enter a valid time for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }else{
+                    String minutes = time.substring(0,time.indexOf(":"));
+                    String seconds = time.substring(time.indexOf(":") + 1, time.length());
+
+                    if(minutes.length() <=0 || seconds.length() != 2 || Integer.parseInt(minutes) + Integer.parseInt(seconds) <= 0){
+                        Toast.makeText(MainActivity.this, "Please enter a valid time for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                }
+
+                if(exercise.getDistance() <= 0){
+                    Toast.makeText(mContext, "Please enter a valid distance for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }else if(exercise.getType().equals(Constants.TYPE_BODYWEIGHT)){
+                if(exercise.getSets() <= 0){
+                    Toast.makeText(mContext, "Please enter a valid number of sets for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
+                if(exercise.getReps() <= 0){
+                    Toast.makeText(mContext, "Please enter a valid number of reps for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }else if(exercise.getType().equals(Constants.TYPE_TIME)){
+                String time = exercise.getTime();
+                if(time.length() == 0 || !time.contains(":")){
+                    Toast.makeText(MainActivity.this, "Please enter a valid time for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }else{
+                    String minutes = time.substring(0,time.indexOf(":"));
+                    String seconds = time.substring(time.indexOf(":") + 1, time.length());
+
+                    if(minutes.length() <=0 || seconds.length() != 2 || Integer.parseInt(minutes) + Integer.parseInt(seconds) <= 0){
+                        Toast.makeText(MainActivity.this, "Please enter a valid time for " + exercise.getName(), Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public Boolean validateFieldsAllowEmpty(ArrayList<Exercise> exercises){
+        for(int i = 0; i < exercises.size(); i++){
+            Exercise exercise = exercises.get(i);
+            if(exercise.getType().equals(Constants.TYPE_AEROBIC) || exercise.getType().equals(Constants.TYPE_TIME)){
+                String time = exercise.getTime();
+
+                if(time.length() == 0){
+                    return true;
+                }else if(!time.contains(":")){
+                    Toast.makeText(MainActivity.this, "Please enter a valid time for " + exercise.getName() + ", or leave blank", Toast.LENGTH_SHORT).show();
+                    return false;
+                }else{
+                    String minutes = time.substring(0,time.indexOf(":"));
+                    String seconds = time.substring(time.indexOf(":") + 1, time.length());
+
+                    if(minutes.length() <=0 || seconds.length() != 2){
+                        Toast.makeText(MainActivity.this, "Please enter a valid time for " + exercise.getName() + ", or leave blank", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
