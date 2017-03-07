@@ -17,6 +17,7 @@ public class Exercise {
     public Double distance = null;
     public String time = null;
     String pushId;
+    int superId = 0;
     List<String> altNames = new ArrayList<>();
     String type;
 
@@ -128,5 +129,13 @@ public class Exercise {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getSuperId() {
+        return superId;
+    }
+
+    public void setSuperId(int superId) {
+        this.superId = superId;
     }
 }
