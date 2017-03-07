@@ -16,7 +16,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MenuActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>

@@ -7,10 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 
 import com.epicodus.bitxbit.ui.LoginActivity;
-import com.epicodus.bitxbit.ui.MenuActivity;
+import com.epicodus.bitxbit.ui.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -40,7 +39,7 @@ public class AuthListenerActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d("Activity Name:", mActivityName);
                     if(mActivityName.equals("LoginActivity")){
-                        startActivity(new Intent(mContext, MenuActivity.class));
+                        startActivity(new Intent(mContext, MainActivity.class));
                     }
                 } else {
                     // User is signed out
@@ -51,11 +50,6 @@ public class AuthListenerActivity extends AppCompatActivity {
                 // ...
             }
         };
-
-//        if(mAuth.getCurrentUser() != null){
-//            Log.d("User name:", mAuth.getCurrentUser().getEmail());
-//            mAuth.notify();
-//        }
     }
 
     @Override
