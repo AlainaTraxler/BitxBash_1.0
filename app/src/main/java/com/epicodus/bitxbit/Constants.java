@@ -7,6 +7,8 @@ package com.epicodus.bitxbit;
 public class Constants {
     public static final String DB_EXERCISES = "exercises";
 
+    public static final String DB_SEARCH = "search";
+
     public static final String TYPE_WEIGHT = "WEIGHT";
     public static final String TYPE_AEROBIC = "AEROBIC";
     public static final String TYPE_BODYWEIGHT = "BODYWEIGHT";

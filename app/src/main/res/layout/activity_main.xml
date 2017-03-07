@@ -43,16 +43,15 @@
         android:id="@+id/FAB_logout" />
 
     <Spinner
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
-        android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
         android:entries="@array/items"
-        android:layout_toLeftOf="@+id/FAB_Save"
-        android:layout_toStartOf="@+id/FAB_Save"
+        android:layout_alignParentStart="true"
         android:layout_alignBottom="@+id/FAB_Save"
-        android:layout_alignTop="@+id/FAB_Save" />
+        android:layout_alignTop="@+id/FAB_Save"
+        android:layout_alignParentLeft="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -79,5 +78,28 @@
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
+
+    <SearchView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorWorkoutMain"
+        android:imeOptions="flagNoExtractUi"
+        android:layout_alignTop="@+id/FAB_Save"
+        android:layout_toLeftOf="@+id/FAB_Save"
+        android:layout_toRightOf="@+id/spinner"
+        android:iconifiedByDefault="false"
+        android:layout_toStartOf="@+id/FAB_Save" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_save_white_24dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:id="@+id/FAB_Seed"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>
