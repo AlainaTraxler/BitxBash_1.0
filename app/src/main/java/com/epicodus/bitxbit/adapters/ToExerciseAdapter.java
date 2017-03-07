@@ -221,9 +221,11 @@ public class ToExerciseAdapter extends RecyclerView.Adapter<ToExerciseAdapter.Ex
                 mWeight.setText("");
             }
 
-            if(mExercise.getTime() != null && !mExercise.getSets().equals("0:00")){
-                Log.v("Time was not null", "setting to " + mExercise.getSets());
-                mTime.setText(mExercise.getTime());
+            if(mExercise.getTime() != null){
+                if(!mExercise.getTime().equals("0:00")){
+                    Log.v("Time was not null", "setting to " + mExercise.getTime());
+                    mTime.setText(mExercise.getTime());
+                }
             }else{
                 Log.v("Time was null", "setting to blank");
                 mTime.setText("");

@@ -6,6 +6,9 @@ package com.epicodus.bitxbit;
 
 public class Constants {
     public static final String DB_EXERCISES = "exercises";
+    public static final String DB_WORKOUTS = "workouts";
+    public static final String DB_ROUTINES = "routines";
+    public static final String DB_USERS = "users";
 
     public static final String DB_SEARCH = "search";
 
