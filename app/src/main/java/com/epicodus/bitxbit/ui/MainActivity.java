@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.epicodus.bitxbit.AuthListenerActivity;
@@ -25,9 +27,10 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AuthListenerActivity implements View.OnClickListener{
+public class MainActivity extends AuthListenerActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
     @BindView(R.id.FAB_logout) FloatingActionButton mFAB_Logout;
     @BindView(R.id.RecyclerView_From) RecyclerView mRecyclerView_From;
+    @BindView(R.id.spinner) Spinner mSpinner;
 
     private FirebaseRecyclerAdapter mFirebaseAdapter;
 
@@ -37,21 +40,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         setContentView(R.layout.activity_menu);
         ButterKnife.bind(this);
 
-        DatabaseReference dbExerciseRef = FirebaseDatabase.getInstance().getReference().child(Constants.DB_EXERCISES);
-
-//        dbExerciseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Log.d(">>>>>", String.valueOf(dataSnapshot.getChildrenCount()));
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-        setupFromExerciseAdapter();
+        mSpinner.setOnItemSelectedListener(this);
 
         mFAB_Logout.setOnClickListener(this);
     }
@@ -63,7 +52,8 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         }
     }
 
-    private void setupFromExerciseAdapter(){
+
+    private void setUpFromExerciseAdapter(){
         DatabaseReference dbExerciseRef = FirebaseDatabase.getInstance().getReference().child(Constants.DB_EXERCISES);
 
         mFirebaseAdapter = new FirebaseRecyclerAdapter<Exercise, FirebaseFromExerciseViewHolder>
@@ -77,5 +67,19 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mRecyclerView_From.setHasFixedSize(false);
         mRecyclerView_From.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView_From.setAdapter(mFirebaseAdapter);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(i == 0){
+            setUpFromExerciseAdapter();
+        }else{
+            mRecyclerView_From.setAdapter(null);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
