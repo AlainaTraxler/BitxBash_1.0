@@ -141,6 +141,7 @@
         android:layout_marginBottom="16dp"
         android:id="@+id/FAB_Refresh"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

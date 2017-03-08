@@ -57,6 +57,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     private ArrayList<Exercise> mFromExerciseList = new ArrayList<Exercise>();
     private ArrayList<Exercise> mToExerciseList = new ArrayList<Exercise>();
     private ArrayList<Exercise> mFilteredFromExerciseList = new ArrayList<Exercise>();
+    private ArrayList<Workout> mFilteredFromWorkoutList = new ArrayList<Workout>();
     private ArrayList<Workout> mWorkoutList = new ArrayList<Workout>();
     private ArrayList<Workout> mRoutineList = new ArrayList<Workout>();
 
@@ -94,9 +95,17 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
             @Override
             public boolean onQueryTextChange(String s) {
                 if(s == ""){
-                    setUpFromExerciseAdapter(null);
+                    if(mSpinner.getSelectedItemPosition() == 0){
+                        setUpFromExerciseAdapter(null);
+                    }else{
+                        setUpFromWorkoutAdapter(null);
+                    }
                 }else{
-                    setUpFromExerciseAdapter(s.toLowerCase());
+                    if(mSpinner.getSelectedItemPosition() == 0){
+                        setUpFromExerciseAdapter(s.toLowerCase());
+                    }else{
+                        setUpFromWorkoutAdapter(s.toLowerCase());
+                    }
                 }
                 return false;
             }
@@ -321,7 +330,10 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     mFromExerciseList.add(snapshot.getValue(Exercise.class));
                 }
-                setUpFromExerciseAdapter(null);
+                if(mSpinner.getSelectedItemPosition() == 0){
+                    setUpFromExerciseAdapter(null);
+                }
+
             }
 
             @Override
@@ -342,7 +354,11 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                     mWorkoutList.add(0, snapshot.getValue(Workout.class));
                 }
                 Log.d("Workout count", String.valueOf(mWorkoutList.size()));
-                setUpFromWorkoutAdapter(null, true);
+
+                if(mSpinner.getSelectedItemPosition() == 1){
+                    mSearchView.setQuery("", false);
+                    setUpFromWorkoutAdapter(null);
+                }
             }
 
             @Override
@@ -363,7 +379,10 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                     mRoutineList.add(snapshot.getValue(Workout.class));
                 }
                 Log.d("Routine count", String.valueOf(mRoutineList.size()));
-                setUpFromWorkoutAdapter(null, false);
+                if(mSpinner.getSelectedItemPosition() == 2){
+                    mSearchView.setQuery("", false);
+                    setUpFromWorkoutAdapter(null);
+                }
             }
 
             @Override
@@ -388,6 +407,32 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         return mFilteredFromExerciseList;
     }
 
+    private ArrayList<Workout> filterWorkouts(String query){
+        mFilteredFromWorkoutList.clear();
+
+        if(mSpinner.getSelectedItemPosition() == 1){
+            for(Workout workout : mWorkoutList){
+                if(query != null) {
+                    if (workout.getName().toLowerCase().contains(query)) {
+                        mFilteredFromWorkoutList.add(workout);
+                    }
+                }else mFilteredFromWorkoutList.add(workout);
+            }
+        }else if(mSpinner.getSelectedItemPosition() == 2){
+            for(Workout workout : mRoutineList){
+                if(query != null) {
+                    if (workout.getName().toLowerCase().contains(query)) {
+                        mFilteredFromWorkoutList.add(workout);
+                    }
+                }else mFilteredFromWorkoutList.add(workout);
+            }
+        }
+
+
+        Log.d("Returning list", String.valueOf(mFilteredFromExerciseList.size()));
+        return mFilteredFromWorkoutList;
+    }
+
     private void setUpFromExerciseAdapter(String query){
         mFromExerciseAdapter = new FromExerciseAdapter(getApplicationContext(), filterExercises(query));
         mRecyclerView_From.setHasFixedSize(true);
@@ -395,14 +440,8 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mRecyclerView_From.setAdapter(mFromExerciseAdapter);
     }
 
-    private void setUpFromWorkoutAdapter(String query, boolean isWorkout){
-        Log.d("In WorkoutAdapter", "!");
-        if(isWorkout){
-            mFromWorkoutAdapter = new FromWorkoutAdapter(getApplicationContext(), mWorkoutList);
-        }else{
-            mFromWorkoutAdapter = new FromWorkoutAdapter(getApplicationContext(), mRoutineList);
-        }
-
+    private void setUpFromWorkoutAdapter(String query){
+        mFromWorkoutAdapter = new FromWorkoutAdapter(getApplicationContext(), filterWorkouts(query));
         mRecyclerView_From.setHasFixedSize(true);
         mRecyclerView_From.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView_From.setAdapter(mFromWorkoutAdapter);
@@ -452,20 +491,12 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                     Exercise original = mFilteredFromExerciseList.get(viewHolder.getAdapterPosition());
                     Exercise exercise = cloneExercise(original);
 
-                    Log.d("Original:", original.getName());
-
                     mToExerciseList.add(exercise);
                     mToExerciseAdapter.notifyItemInserted(mToExerciseList.size());
 
                     mFromExerciseAdapter.notifyDataSetChanged();
                 }else{
-                    Workout workout;
-                    if(spinnerPosition == 1){
-                        workout = mWorkoutList.get(viewHolder.getAdapterPosition());
-                    }else{
-                        workout = mRoutineList.get(viewHolder.getAdapterPosition());
-                    }
-
+                    Workout workout = mFilteredFromWorkoutList.get(viewHolder.getAdapterPosition());;
                     populateFromWorkout(workout);
                 }
 
