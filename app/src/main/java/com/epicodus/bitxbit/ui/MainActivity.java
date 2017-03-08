@@ -133,7 +133,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
             if(mInEdit){
                 if(mEditType.equals(Constants.TYPE_WORKOUT) && validateSelected(mToExerciseList) && validateFields(mToExerciseList)){
                     saveWorkout();
-                    endEdit();
                 }else if(mEditType.equals(Constants.TYPE_ROUTINE) && validateSelected(mToExerciseList) && validateFieldsAllowEmpty(mToExerciseList)){
                     saveRoutine();
                 }
@@ -183,20 +182,19 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                         if(name.length() == 0){
                             Toast.makeText(mContext, "Please name this routine", Toast.LENGTH_SHORT).show();
                         }else{
+                            Workout workout = new Workout(mToExerciseList, name, Constants.TYPE_ROUTINE);
+                            Log.d("ExList:", String.valueOf(workout.getExercises()));
+
                             if(mInEdit){
-
+                                workout.setPushId(mEditId);
+                                dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_ROUTINES).child(mEditId).setValue(workout);
+                                Toast.makeText(mContext, "Edits saved", Toast.LENGTH_SHORT).show();
+                                endEdit();
+                                fetchRoutines();
                             }else{
-                                Workout workout = new Workout(mToExerciseList, name, Constants.TYPE_ROUTINE);
-
                                 DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_ROUTINES).push();
                                 workout.setPushId(pushRef.getKey());
                                 pushRef.setValue(workout);
-                            }
-
-                            if(mInEdit){
-                                Toast.makeText(mContext, "Edits saved", Toast.LENGTH_SHORT).show();
-                                endEdit();
-                            }else{
                                 Toast.makeText(mContext, "Routine saved", Toast.LENGTH_SHORT).show();
                             }
                             
@@ -214,8 +212,11 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         Workout workout = new Workout(mToExerciseList, null, Constants.TYPE_WORKOUT);
 
         if(mInEdit){
+            workout.setPushId(mEditId);
             dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).child(mEditId).setValue(workout);
             Toast.makeText(MainActivity.this, "Edits saved", Toast.LENGTH_SHORT).show();
+            endEdit();
+            fetchWorkouts();
         }else{
             DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).push();
             workout.setPushId(pushRef.getKey());
@@ -229,7 +230,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         int numberOfSets = original.getSets();
 
             for(int i = 1; i <= numberOfSets; i++){
-                Log.v("Loop", "#" + i);
                 Exercise clone = cloneExercise(original);
                 clone.setSets(1);
                 mToExerciseList.add(position, clone);
@@ -273,6 +273,8 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         }
 
         mEditId = workout.getPushId();
+
+        Log.d("mEditId", mEditId);
 
         mToExerciseList.clear();
         populateFromWorkout(workout);
