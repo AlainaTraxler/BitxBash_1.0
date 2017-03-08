@@ -193,6 +193,22 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         dialog.show();
     }
 
+    public void splitSets(int position){
+        Exercise original = mToExerciseList.get(position);
+        int numberOfSets = original.getSets();
+
+            for(int i = 1; i <= numberOfSets; i++){
+                Log.v("Loop", "#" + i);
+                Exercise clone = new Exercise();
+                clone = original.clone(original);
+                clone.setSets(1);
+                mToExerciseList.add(position, clone);
+                mToExerciseAdapter.notifyItemInserted(position);
+            }
+            mToExerciseList.remove(position + numberOfSets);
+            mToExerciseAdapter.notifyItemRemoved(position + numberOfSets);
+    }
+
     private void fetchExercises(){
         DatabaseReference dbExerciseRef = dbRef.child(Constants.DB_EXERCISES);
 

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.epicodus.bitxbit.Constants;
 import com.epicodus.bitxbit.R;
 import com.epicodus.bitxbit.models.Exercise;
+import com.epicodus.bitxbit.ui.MainActivity;
 import com.epicodus.bitxbit.utilities.DoubleFilterMinMax;
 import com.epicodus.bitxbit.utilities.InputFilterMinMax;
 
@@ -34,8 +35,6 @@ public class ToExerciseAdapter extends RecyclerView.Adapter<ToExerciseAdapter.Ex
     private Context mContext;
     private ToExerciseAdapter mAdapter;
 
-    private ExerciseViewHolder mViewHolder;
-    private RecyclerView mRecyclerView;
 
     public ToExerciseAdapter(Context context, ArrayList<Exercise> exercises) {
         mContext = context;
@@ -62,7 +61,6 @@ public class ToExerciseAdapter extends RecyclerView.Adapter<ToExerciseAdapter.Ex
     public void onBindViewHolder(final ToExerciseAdapter.ExerciseViewHolder holder, int position) {
         Log.d("Binding in To: ", mExercises.get(position).getName());
         holder.bindExercise(mExercises.get(position));
-        mViewHolder = holder;
     }
 
     @Override
@@ -150,20 +148,7 @@ public class ToExerciseAdapter extends RecyclerView.Adapter<ToExerciseAdapter.Ex
         }
 
         public void onClick(View v){
-            int catcher = mExercise.getSets();
-            if(v == mSplit){
-                int currentPosition = mExercises.indexOf(mExercise);
-                for(int i = 1; i <= catcher; i++){
-                    Log.v("Loop", "#" + i);
-                    Exercise exercise = mExercise;
-                    exercise.setSets(1);
-                    mExercises.add(currentPosition, exercise);
-                    Log.v("Current: " + currentPosition, " vs actual: " + mExercises.indexOf(exercise));
-                    mAdapter.notifyItemInserted(currentPosition);
-                }
-                mExercises.remove(currentPosition + catcher);
-                mAdapter.notifyItemRemoved(currentPosition + catcher);
-            }
+            ((MainActivity)mContext).splitSets(getAdapterPosition());
         }
 
         public void bindExercise(final Exercise exercise) {
