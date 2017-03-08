@@ -259,25 +259,28 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     public void editWorkout(int position){
         Workout workout;
 
-        mInEdit = true;
-        mFAB_Clear.setVisibility(View.GONE);
-        mFAB_Done.setVisibility(View.GONE);
-        mToExerciseList.clear();
+        if(!mInEdit){
+            mInEdit = true;
+            mFAB_Clear.setVisibility(View.GONE);
+            mFAB_Done.setVisibility(View.GONE);
+            mToExerciseList.clear();
 
-        if(mSpinner.getSelectedItemPosition() == 1){
-            workout = mWorkoutList.get(position);
-            mEditType = Constants.TYPE_WORKOUT;
-        }else{
-            workout = mRoutineList.get(position);
-            mEditType = Constants.TYPE_ROUTINE;
+            if(mSpinner.getSelectedItemPosition() == 1){
+                workout = mWorkoutList.get(position);
+                mEditType = Constants.TYPE_WORKOUT;
+            }else{
+                workout = mRoutineList.get(position);
+                mEditType = Constants.TYPE_ROUTINE;
+            }
+
+            Toast.makeText(mContext, "Editing " + workout.getName(), Toast.LENGTH_SHORT).show();
+
+            mEditId = workout.getPushId();
+
+            mToExerciseList.clear();
+            populateFromWorkout(workout);
         }
 
-        mEditId = workout.getPushId();
-
-        Log.d("mEditId", mEditId);
-
-        mToExerciseList.clear();
-        populateFromWorkout(workout);
     }
 
     public void endEdit(){
