@@ -31,7 +31,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
@@ -67,7 +66,9 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     DatabaseReference dbRef;
 
     private String userId;
-    private boolean inEdit = false;
+    private boolean mInEdit = false;
+    String mEditType;
+    String mEditId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +112,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if(view == mFAB_Logout){
-            if(inEdit){
+            if(mInEdit){
                 endEdit();
             }else{
                 mAuth.signOut();
@@ -123,19 +124,21 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
             startActivity(new Intent(MainActivity.this, MainActivity.class));
         }else if(view == mFAB_Done) {
             if (validateSelected(mToExerciseList) && validateFields(mToExerciseList)) {
-                Toast.makeText(MainActivity.this, "Workout completed", Toast.LENGTH_SHORT).show();
-
-                Workout workout = new Workout(mToExerciseList, null, Constants.TYPE_WORKOUT);
-                DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).push();
-                workout.setPushId(pushRef.getKey());
-                pushRef.setValue(workout);
+                saveWorkout();
             }
         }else if(view == mFAB_Clear){
             mToExerciseList.clear();
             mToExerciseAdapter.notifyDataSetChanged();
         }else if(view == mFAB_Save){
-            if(validateSelected(mToExerciseList) && validateFieldsAllowEmpty(mToExerciseList)){
-                saveRoutine();
+            if(mInEdit){
+                if(mEditType.equals(Constants.TYPE_WORKOUT) && validateSelected(mToExerciseList) && validateFields(mToExerciseList)){
+                    saveWorkout();
+                    endEdit();
+                }else if(mEditType.equals(Constants.TYPE_ROUTINE) && validateSelected(mToExerciseList) && validateFieldsAllowEmpty(mToExerciseList)){
+                    saveRoutine();
+                }
+            }else if(validateSelected(mToExerciseList) && validateFieldsAllowEmpty(mToExerciseList)){
+                    saveRoutine();
             }
         }
     }
@@ -180,13 +183,22 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                         if(name.length() == 0){
                             Toast.makeText(mContext, "Please name this routine", Toast.LENGTH_SHORT).show();
                         }else{
-                            Workout workout = new Workout(mToExerciseList, name, Constants.TYPE_ROUTINE);
-                            
-                            DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_ROUTINES).push();
-                            workout.setPushId(pushRef.getKey());
-                            pushRef.setValue(workout);
+                            if(mInEdit){
 
-                            Toast.makeText(mContext, "Routine saved", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Workout workout = new Workout(mToExerciseList, name, Constants.TYPE_ROUTINE);
+
+                                DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_ROUTINES).push();
+                                workout.setPushId(pushRef.getKey());
+                                pushRef.setValue(workout);
+                            }
+
+                            if(mInEdit){
+                                Toast.makeText(mContext, "Edits saved", Toast.LENGTH_SHORT).show();
+                                endEdit();
+                            }else{
+                                Toast.makeText(mContext, "Routine saved", Toast.LENGTH_SHORT).show();
+                            }
                             
                             dialog.dismiss();
                         }
@@ -196,6 +208,20 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         });
 
         dialog.show();
+    }
+
+    private void saveWorkout(){
+        Workout workout = new Workout(mToExerciseList, null, Constants.TYPE_WORKOUT);
+
+        if(mInEdit){
+            dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).child(mEditId).setValue(workout);
+            Toast.makeText(MainActivity.this, "Edits saved", Toast.LENGTH_SHORT).show();
+        }else{
+            DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).push();
+            workout.setPushId(pushRef.getKey());
+            pushRef.setValue(workout);
+            Toast.makeText(MainActivity.this, "Workout completed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void splitSets(int position){
@@ -233,23 +259,27 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     public void editWorkout(int position){
         Workout workout;
 
-        inEdit = true;
+        mInEdit = true;
         mFAB_Clear.setVisibility(View.GONE);
         mFAB_Done.setVisibility(View.GONE);
         mToExerciseList.clear();
 
         if(mSpinner.getSelectedItemPosition() == 1){
             workout = mWorkoutList.get(position);
+            mEditType = Constants.TYPE_WORKOUT;
         }else{
             workout = mRoutineList.get(position);
+            mEditType = Constants.TYPE_ROUTINE;
         }
+
+        mEditId = workout.getPushId();
 
         mToExerciseList.clear();
         populateFromWorkout(workout);
     }
 
     public void endEdit(){
-        inEdit = false;
+        mInEdit = false;
         mFAB_Clear.setVisibility(View.VISIBLE);
         mFAB_Done.setVisibility(View.VISIBLE);
         mToExerciseList.clear();
