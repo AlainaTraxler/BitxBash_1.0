@@ -48,6 +48,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     @BindView(R.id.FAB_Done) FloatingActionButton mFAB_Done;
     @BindView(R.id.FAB_Clear) FloatingActionButton mFAB_Clear;
     @BindView(R.id.FAB_Save) FloatingActionButton mFAB_Save;
+    @BindView(R.id.FAB_Delete) FloatingActionButton mFAB_Delete;
     @BindView(R.id.searchView) SearchView mSearchView;
     @BindView(R.id.RecyclerView_From) RecyclerView mRecyclerView_From;
     @BindView(R.id.RecyclerView_To) RecyclerView mRecyclerView_To;
@@ -107,6 +108,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mFAB_Clear.setOnClickListener(this);
         mFAB_Done.setOnClickListener(this);
         mFAB_Save.setOnClickListener(this);
+        mFAB_Delete.setOnClickListener(this);
     }
 
     @Override
@@ -139,6 +141,21 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
             }else if(validateSelected(mToExerciseList) && validateFieldsAllowEmpty(mToExerciseList)){
                     saveRoutine();
             }
+        }else if(view == mFAB_Delete){
+            if(mEditType.equals(Constants.TYPE_WORKOUT)){
+                dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).child(mEditId).removeValue();
+                if(mSpinner.getSelectedItemPosition() == 2){
+                    fetchWorkouts();
+                }
+                Toast.makeText(mContext, "Workout deleted", Toast.LENGTH_SHORT).show();
+            }else if(mEditType.equals(Constants.TYPE_ROUTINE)){
+                dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_ROUTINES).child(mEditId).removeValue();
+                if(mSpinner.getSelectedItemPosition() == 2){
+                    fetchRoutines();
+                }
+                Toast.makeText(mContext, "Routine deleted", Toast.LENGTH_SHORT).show();
+            }
+            endEdit();
         }
     }
 
@@ -261,6 +278,8 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
 
         if(!mInEdit){
             mInEdit = true;
+            mFAB_Logout.setImageDrawable(getResources().getDrawable(R.drawable.ic_navigate_before_white_24dp));
+            mFAB_Delete.setVisibility(View.VISIBLE);
             mFAB_Clear.setVisibility(View.GONE);
             mFAB_Done.setVisibility(View.GONE);
             mToExerciseList.clear();
@@ -284,7 +303,9 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     }
 
     public void endEdit(){
+        mFAB_Logout.setImageDrawable(getResources().getDrawable(R.drawable.ic_clear_white_24dp));
         mInEdit = false;
+        mFAB_Delete.setVisibility(View.GONE);
         mFAB_Clear.setVisibility(View.VISIBLE);
         mFAB_Done.setVisibility(View.VISIBLE);
         mToExerciseList.clear();

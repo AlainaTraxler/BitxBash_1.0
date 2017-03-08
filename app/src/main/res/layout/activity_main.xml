@@ -15,8 +15,21 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:id="@+id/FAB_Save"
-        android:layout_toLeftOf="@+id/FAB_Done"
+        android:layout_toLeftOf="@+id/FAB_Delete"
         android:layout_alignBottom="@+id/FAB_logout" />
+
+    <android.support.design.widget.FloatingActionButton
+        app:fabSize="normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_delete_white_24dp"
+        app:backgroundTint="@color/colorWorkoutMain"
+        android:layout_marginRight="16dp"
+        android:id="@+id/FAB_Delete"
+        android:layout_alignTop="@id/FAB_Save"
+        android:layout_alignBottom="@id/FAB_Save"
+        android:layout_toLeftOf="@+id/FAB_Done"
+        android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
         app:fabSize="normal"
