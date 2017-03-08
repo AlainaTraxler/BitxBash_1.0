@@ -1,5 +1,7 @@
 package com.epicodus.bitxbit.models;
 
+import android.util.Log;
+
 import com.epicodus.bitxbit.Constants;
 
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ public class Exercise {
     }
 
     public Exercise clone(Exercise original){
+        Log.d("Original: ", String.valueOf(original));
         Exercise clone = new Exercise(original.getName(), original.getType());
 
         clone.setSets(clone.getSets());

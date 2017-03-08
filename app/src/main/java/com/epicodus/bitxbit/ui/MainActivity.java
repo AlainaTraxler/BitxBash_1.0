@@ -67,6 +67,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     DatabaseReference dbRef;
 
     private String userId;
+    private boolean inEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,11 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if(view == mFAB_Logout){
-            mAuth.signOut();
+            if(inEdit){
+                endEdit();
+            }else{
+                mAuth.signOut();
+            }
         }else if(view == mFAB_Seed){
             seedExercisesFromTextFile();
         }else if(view == mFAB_Refresh){
@@ -120,7 +125,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
             if (validateSelected(mToExerciseList) && validateFields(mToExerciseList)) {
                 Toast.makeText(MainActivity.this, "Workout completed", Toast.LENGTH_SHORT).show();
 
-                Workout workout = new Workout(mToExerciseList, null);
+                Workout workout = new Workout(mToExerciseList, null, Constants.TYPE_WORKOUT);
                 DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).push();
                 workout.setPushId(pushRef.getKey());
                 pushRef.setValue(workout);
@@ -175,7 +180,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                         if(name.length() == 0){
                             Toast.makeText(mContext, "Please name this routine", Toast.LENGTH_SHORT).show();
                         }else{
-                            Workout workout = new Workout(mToExerciseList, name);
+                            Workout workout = new Workout(mToExerciseList, name, Constants.TYPE_ROUTINE);
                             
                             DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_ROUTINES).push();
                             workout.setPushId(pushRef.getKey());
@@ -199,14 +204,56 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
 
             for(int i = 1; i <= numberOfSets; i++){
                 Log.v("Loop", "#" + i);
-                Exercise clone = new Exercise();
-                clone = original.clone(original);
+                Exercise clone = cloneExercise(original);
                 clone.setSets(1);
                 mToExerciseList.add(position, clone);
                 mToExerciseAdapter.notifyItemInserted(position);
             }
             mToExerciseList.remove(position + numberOfSets);
             mToExerciseAdapter.notifyItemRemoved(position + numberOfSets);
+    }
+
+    private Exercise cloneExercise(Exercise _original){
+        Exercise clone = new Exercise();
+
+        clone.setSets(_original.getSets());
+        clone.setReps(_original.getReps());
+        clone.setWeight(_original.getWeight());
+        clone.setTime(_original.getTime());
+        clone.setDistance(_original.getDistance());
+        clone.setAltNames(_original.getAltNames());
+        clone.setPushId(_original.getPushId());
+        clone.setName(_original.getName());
+        clone.setType(_original.getType());
+
+        return clone;
+    }
+
+    //Reminder that routines and workouts both use the Workout model, and that this method applies to edits of either one.
+    public void editWorkout(int position){
+        Workout workout;
+
+        inEdit = true;
+        mFAB_Clear.setVisibility(View.GONE);
+        mFAB_Done.setVisibility(View.GONE);
+        mToExerciseList.clear();
+
+        if(mSpinner.getSelectedItemPosition() == 1){
+            workout = mWorkoutList.get(position);
+        }else{
+            workout = mRoutineList.get(position);
+        }
+
+        mToExerciseList.clear();
+        populateFromWorkout(workout);
+    }
+
+    public void endEdit(){
+        inEdit = false;
+        mFAB_Clear.setVisibility(View.VISIBLE);
+        mFAB_Done.setVisibility(View.VISIBLE);
+        mToExerciseList.clear();
+        mToExerciseAdapter.notifyDataSetChanged();
     }
 
     private void fetchExercises(){
@@ -334,7 +381,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
 
     }
 
-
     private void setFromItemTouchListener() {
         ItemTouchHelper.SimpleCallback itemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -347,28 +393,24 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                 int spinnerPosition = mSpinner.getSelectedItemPosition();
 
                 if(spinnerPosition == 0){
-                    Exercise exercise = new Exercise();
-                    exercise = exercise.clone(mFilteredFromExerciseList.get(viewHolder.getAdapterPosition()));
+                    Exercise original = mFilteredFromExerciseList.get(viewHolder.getAdapterPosition());
+                    Exercise exercise = cloneExercise(original);
+
+                    Log.d("Original:", original.getName());
 
                     mToExerciseList.add(exercise);
-                    mToExerciseAdapter.notifyItemInserted(mFromExerciseList.size());
-                    Log.d("ToExercise size: ", String.valueOf(mToExerciseList.size()));
+                    mToExerciseAdapter.notifyItemInserted(mToExerciseList.size());
 
                     mFromExerciseAdapter.notifyDataSetChanged();
-                }else if(spinnerPosition == 1){
-                    Workout workout = mWorkoutList.get(viewHolder.getAdapterPosition());
-
-                    for(Exercise exercise : workout.getExercises()){
-                        Exercise clone = new Exercise();
-                        clone = exercise.clone(exercise);
-
-                        mToExerciseList.add(clone);
-                        mToExerciseAdapter.notifyItemInserted(mFromExerciseList.size());
+                }else{
+                    Workout workout;
+                    if(spinnerPosition == 1){
+                        workout = mWorkoutList.get(viewHolder.getAdapterPosition());
+                    }else{
+                        workout = mRoutineList.get(viewHolder.getAdapterPosition());
                     }
 
-                    mFromWorkoutAdapter.notifyDataSetChanged();
-                }else if(spinnerPosition == 2){
-
+                    populateFromWorkout(workout);
                 }
 
             }
@@ -376,6 +418,17 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView_From);
+    }
+
+    private void populateFromWorkout(Workout _workout){
+        for(Exercise exercise : _workout.getExercises()){
+            Exercise clone = cloneExercise(exercise);
+
+            mToExerciseList.add(clone);
+            mToExerciseAdapter.notifyItemInserted(mFromExerciseList.size());
+        }
+
+        mFromWorkoutAdapter.notifyDataSetChanged();
     }
 
     private void setToItemTouchListener(){

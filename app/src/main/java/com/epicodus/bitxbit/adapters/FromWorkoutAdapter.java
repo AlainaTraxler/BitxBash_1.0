@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.epicodus.bitxbit.R;
 import com.epicodus.bitxbit.models.Exercise;
 import com.epicodus.bitxbit.models.Workout;
+import com.epicodus.bitxbit.ui.MainActivity;
 
 import java.util.ArrayList;
 
@@ -55,6 +56,14 @@ public class FromWorkoutAdapter extends RecyclerView.Adapter<FromWorkoutAdapter.
             super(itemView);
             ButterKnife.bind(this, itemView);
             mContext = itemView.getContext();
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    ((MainActivity)mContext).editWorkout(getAdapterPosition());
+                    return false;
+                }
+            });
         }
 
         public void bindWorkout(Workout workout) {

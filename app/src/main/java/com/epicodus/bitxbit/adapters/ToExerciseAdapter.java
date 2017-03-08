@@ -64,16 +64,6 @@ public class ToExerciseAdapter extends RecyclerView.Adapter<ToExerciseAdapter.Ex
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView){
-//        Log.v("Detach", "!!");
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(ExerciseViewHolder holder){
-//        Log.v("Detach from window", "!!");
-    }
-
-    @Override
     public int getItemCount() {
         return mExercises.size();
     }

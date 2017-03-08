@@ -15,13 +15,16 @@ public class Workout {
     public ArrayList<Exercise> exercises = new ArrayList<Exercise>();
     public String createdOn;
     public String pushId;
+    public String type;
 
     public Workout() {
     }
 
-    public Workout(ArrayList<Exercise> exercises, String _name) {
+    public Workout(ArrayList<Exercise> exercises, String _name, String _type) {
         this.exercises = exercises;
         createdOn = DateFormat.getDateTimeInstance().format(new Date());
+        type = _type;
+
         if(_name == null){
             name = createdOn;
         }else name = _name;
