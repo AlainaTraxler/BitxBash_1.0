@@ -1,5 +1,6 @@
 package com.epicodus.bitxbit.ui;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -8,7 +9,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Editable;
+import android.text.method.KeyListener;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -17,6 +21,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.epicodus.bitxbit.AuthListenerActivity;
@@ -169,10 +174,16 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     }
 
     private void saveRoutine(){
+//        Dialog dialog = new Dialog(mContext);
+//        dialog.setContentView(R.layout.routine_dialog);
+//        dialog.setTitle("Name routine");
+//
+//        dialog.show();
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Name routine");
 
         final EditText input = new EditText(MainActivity.this);
+
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -180,6 +191,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                 LinearLayout.LayoutParams.MATCH_PARENT);
         input.setLayoutParams(lp);
         input.setMaxLines(1);
+        input.setSingleLine();
 
         builder.setView(input);
 
@@ -223,7 +235,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                                 pushRef.setValue(workout);
                                 Toast.makeText(mContext, "Routine saved", Toast.LENGTH_SHORT).show();
                             }
-                            
+
                             dialog.dismiss();
                         }
                     }
