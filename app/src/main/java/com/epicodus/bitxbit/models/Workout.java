@@ -1,5 +1,7 @@
 package com.epicodus.bitxbit.models;
 
+import android.util.Log;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,12 +19,12 @@ public class Workout {
     public Workout() {
     }
 
-    public Workout(ArrayList<Exercise> exercises, String name) {
+    public Workout(ArrayList<Exercise> exercises, String _name) {
         this.exercises = exercises;
         createdOn = DateFormat.getDateTimeInstance().format(new Date());
-        if(name == null){
+        if(_name == null){
             name = createdOn;
-        }
+        }else name = _name;
     }
 
     public ArrayList<Exercise> getExercises() {
@@ -47,5 +49,13 @@ public class Workout {
 
     public void setPushId(String pushId) {
         this.pushId = pushId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

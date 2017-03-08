@@ -95,7 +95,6 @@ public class ToExerciseAdapter extends RecyclerView.Adapter<ToExerciseAdapter.Ex
         @BindView(R.id.Weight) EditText mWeight;
         @BindView(R.id.Time) EditText mTime;
         @BindView(R.id.Distance) EditText mDistance;
-        @BindView(R.id.Drag) ImageView mDrag;
         @BindView(R.id.Split) ImageView mSplit;
 
         private Context mContext;
@@ -106,8 +105,6 @@ public class ToExerciseAdapter extends RecyclerView.Adapter<ToExerciseAdapter.Ex
         private TextWatcher mWeightWatcher;
         private TextWatcher mTimeWatcher;
         private TextWatcher mDistanceWatcher;
-
-        private MyCustomEditTextListener setsCustomEditTextListener;
 
         private Exercise mExercise;
 
@@ -438,32 +435,6 @@ public class ToExerciseAdapter extends RecyclerView.Adapter<ToExerciseAdapter.Ex
                 if(exercise.getDistance() != 0){
                     mDistance.setText(String.valueOf(exercise.getDistance()));
                 }
-            }
-
-        }
-        private class MyCustomEditTextListener implements TextWatcher {
-            private int position;
-
-            public void updatePosition(int position) {
-                this.position = position;
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                // no op
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                mExercise.setSets(3);
-
-                Log.v("Custom working", "!!");
-                Log.v("Output", charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                // no op
             }
         }
     }

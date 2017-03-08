@@ -1,6 +1,5 @@
 package com.epicodus.bitxbit.ui;
 
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +23,7 @@ import com.epicodus.bitxbit.AuthListenerActivity;
 import com.epicodus.bitxbit.Constants;
 import com.epicodus.bitxbit.R;
 import com.epicodus.bitxbit.adapters.FromExerciseAdapter;
+import com.epicodus.bitxbit.adapters.FromWorkoutAdapter;
 import com.epicodus.bitxbit.adapters.ToExerciseAdapter;
 import com.epicodus.bitxbit.models.Exercise;
 import com.epicodus.bitxbit.models.Workout;
@@ -31,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
@@ -56,8 +57,12 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     private ArrayList<Exercise> mFromExerciseList = new ArrayList<Exercise>();
     private ArrayList<Exercise> mToExerciseList = new ArrayList<Exercise>();
     private ArrayList<Exercise> mFilteredFromExerciseList = new ArrayList<Exercise>();
+    private ArrayList<Workout> mWorkoutList = new ArrayList<Workout>();
+    private ArrayList<Workout> mRoutineList = new ArrayList<Workout>();
+
     private FromExerciseAdapter mFromExerciseAdapter;
     private ToExerciseAdapter mToExerciseAdapter;
+    private FromWorkoutAdapter mFromWorkoutAdapter;
 
     DatabaseReference dbRef;
 
@@ -142,6 +147,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                 LinearLayout.LayoutParams.MATCH_PARENT);
         input.setLayoutParams(lp);
         input.setMaxLines(1);
+
         builder.setView(input);
 
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
@@ -165,6 +171,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                     @Override
                     public void onClick(View view) {
                         String name = input.getText().toString().trim();
+                        Log.d("Null check", name);
                         if(name.length() == 0){
                             Toast.makeText(mContext, "Please name this routine", Toast.LENGTH_SHORT).show();
                         }else{
@@ -205,6 +212,48 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         });
     }
 
+    private void fetchWorkouts(){
+        DatabaseReference dbWorkoutsRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS);
+        mWorkoutList.clear();
+
+        dbWorkoutsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    mWorkoutList.add(0, snapshot.getValue(Workout.class));
+                }
+                Log.d("Workout count", String.valueOf(mWorkoutList.size()));
+                setUpFromWorkoutAdapter(null, true);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void fetchRoutines(){
+        DatabaseReference dbRoutinesRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_ROUTINES);
+        mRoutineList.clear();
+
+        dbRoutinesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    mRoutineList.add(snapshot.getValue(Workout.class));
+                }
+                Log.d("Routine count", String.valueOf(mRoutineList.size()));
+                setUpFromWorkoutAdapter(null, false);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private ArrayList<Exercise> filterExercises(String query){
         mFilteredFromExerciseList.clear();
 
@@ -227,6 +276,19 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mRecyclerView_From.setAdapter(mFromExerciseAdapter);
     }
 
+    private void setUpFromWorkoutAdapter(String query, boolean isWorkout){
+        Log.d("In WorkoutAdapter", "!");
+        if(isWorkout){
+            mFromWorkoutAdapter = new FromWorkoutAdapter(getApplicationContext(), mWorkoutList);
+        }else{
+            mFromWorkoutAdapter = new FromWorkoutAdapter(getApplicationContext(), mRoutineList);
+        }
+
+        mRecyclerView_From.setHasFixedSize(true);
+        mRecyclerView_From.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView_From.setAdapter(mFromWorkoutAdapter);
+    }
+
     private void setUpToExerciseAdapter(){
         mToExerciseAdapter = new ToExerciseAdapter(getApplicationContext(), mToExerciseList);
         mRecyclerView_To.setHasFixedSize(true);
@@ -242,6 +304,10 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
             }else{
                 setUpFromExerciseAdapter(null);
             }
+        }else if(i == 1){
+            fetchWorkouts();
+        }else if(i == 2){
+            fetchRoutines();
         }else{
             mRecyclerView_From.setAdapter(null);
         }
@@ -262,16 +328,33 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
 
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                Log.d("Swiped: ", mFilteredFromExerciseList.get(viewHolder.getAdapterPosition()).getName());
+                int spinnerPosition = mSpinner.getSelectedItemPosition();
 
-                Exercise exercise = new Exercise();
-                exercise = exercise.clone(mFilteredFromExerciseList.get(viewHolder.getAdapterPosition()));
+                if(spinnerPosition == 0){
+                    Exercise exercise = new Exercise();
+                    exercise = exercise.clone(mFilteredFromExerciseList.get(viewHolder.getAdapterPosition()));
 
-                mToExerciseList.add(exercise);
-                mToExerciseAdapter.notifyItemInserted(mFromExerciseList.size());
-                Log.d("ToExercise size: ", String.valueOf(mToExerciseList.size()));
+                    mToExerciseList.add(exercise);
+                    mToExerciseAdapter.notifyItemInserted(mFromExerciseList.size());
+                    Log.d("ToExercise size: ", String.valueOf(mToExerciseList.size()));
 
-                mFromExerciseAdapter.notifyDataSetChanged();
+                    mFromExerciseAdapter.notifyDataSetChanged();
+                }else if(spinnerPosition == 1){
+                    Workout workout = mWorkoutList.get(viewHolder.getAdapterPosition());
+
+                    for(Exercise exercise : workout.getExercises()){
+                        Exercise clone = new Exercise();
+                        clone = exercise.clone(exercise);
+
+                        mToExerciseList.add(clone);
+                        mToExerciseAdapter.notifyItemInserted(mFromExerciseList.size());
+                    }
+
+                    mFromWorkoutAdapter.notifyDataSetChanged();
+                }else if(spinnerPosition == 2){
+
+                }
+
             }
         };
 
@@ -324,10 +407,8 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         Toast.makeText(MainActivity.this, "Seed active", Toast.LENGTH_SHORT).show();
 
         DatabaseReference dbExercises = dbRef.child(Constants.DB_EXERCISES);
-        DatabaseReference dbSearchExercises = dbRef.child(Constants.DB_SEARCH).child(Constants.DB_EXERCISES);
 
         dbExercises.removeValue();
-        dbSearchExercises.removeValue();
 
         BufferedReader reader = null;
         try {
@@ -352,7 +433,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                 exercise.setPushId(pushId);
                 pushRef.setValue(exercise);
 
-                dbSearchExercises.child(pushId).setValue(exercise.getName().toLowerCase());
 
             }
 

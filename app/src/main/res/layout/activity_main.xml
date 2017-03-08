@@ -74,6 +74,7 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="0dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
             android:id="@+id/RecyclerView_From"
             android:layout_height="match_parent"
             android:layout_weight="1">
@@ -84,6 +85,7 @@
             android:layout_width="0dp"
             android:id="@+id/RecyclerView_To"
             android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
@@ -98,10 +100,12 @@
         android:imeOptions="flagNoExtractUi"
         android:id="@+id/searchView"
         android:layout_alignTop="@+id/FAB_Save"
+        android:layout_alignBottom="@+id/FAB_Save"
         android:layout_toLeftOf="@+id/FAB_Save"
-        android:layout_toRightOf="@+id/spinner"
-        android:iconifiedByDefault="true"
-        android:layout_toStartOf="@+id/FAB_Save" />
+        android:layout_toEndOf="@+id/spinner"
+        android:iconifiedByDefault="false"
+        android:layout_toStartOf="@+id/FAB_Save"
+        android:layout_toRightOf="@+id/spinner" />
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"

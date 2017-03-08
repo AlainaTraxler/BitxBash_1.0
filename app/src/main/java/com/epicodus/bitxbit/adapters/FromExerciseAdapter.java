@@ -64,5 +64,9 @@ public class FromExerciseAdapter extends RecyclerView.Adapter<FromExerciseAdapte
         public Exercise getExercise(){
             return mExercises.get(getAdapterPosition());
         }
+
+        public String getType(){
+            return "exercise";
+        }
     }
 }
