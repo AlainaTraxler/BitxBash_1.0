@@ -334,6 +334,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mToExerciseAdapter.notifyDataSetChanged();
     }
 
+    //-----Data fetch methods-----
     private void fetchExercises(){
         DatabaseReference dbExerciseRef = dbRef.child(Constants.DB_EXERCISES);
 
@@ -405,6 +406,8 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         });
     }
 
+    //----Filter methods-----
+    //Pass null to get unfiltered list
     private ArrayList<Exercise> filterExercises(String query){
         mFilteredFromExerciseList.clear();
 
@@ -420,6 +423,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         return mFilteredFromExerciseList;
     }
 
+    //Filters routines AND workouts, will likely split this at some point for code legibility
     private ArrayList<Workout> filterWorkouts(String query){
         mFilteredFromWorkoutList.clear();
 
@@ -446,6 +450,8 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         return mFilteredFromWorkoutList;
     }
 
+    //-----Adapter methods-----
+    //Pass null for unfiltered list
     private void setUpFromExerciseAdapter(String query){
         mFromExerciseAdapter = new FromExerciseAdapter(getApplicationContext(), filterExercises(query));
         mRecyclerView_From.setHasFixedSize(true);
@@ -454,6 +460,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mRecyclerView_From.setAdapter(mFromExerciseAdapter);
     }
 
+    //Pass null for unfiltered list
     private void setUpFromWorkoutAdapter(String query){
         mFromWorkoutAdapter = new FromWorkoutAdapter(getApplicationContext(), filterWorkouts(query));
         mRecyclerView_From.setHasFixedSize(true);
@@ -469,6 +476,10 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mRecyclerView_To.setAdapter(mToExerciseAdapter);
     }
 
+    //-----Spinner behavior
+    //0 = Exercises
+    //1 = Workouts
+    //3 = Routines
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if(i == 0){
@@ -491,6 +502,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
 
     }
 
+    //-----Item touch listener methods-----
     private void setFromItemTouchListener() {
         ItemTouchHelper.SimpleCallback itemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -520,17 +532,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView_From);
-    }
-
-    private void populateFromWorkout(Workout _workout){
-        for(Exercise exercise : _workout.getExercises()){
-            Exercise clone = cloneExercise(exercise);
-
-            mToExerciseList.add(clone);
-            mToExerciseAdapter.notifyItemInserted(mFromExerciseList.size());
-        }
-
-        mFromWorkoutAdapter.notifyDataSetChanged();
     }
 
     private void setToItemTouchListener(){
@@ -572,6 +573,17 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         itemTouchHelper.attachToRecyclerView(mRecyclerView_To);
     }
 
+    //Populates the ToAdapter using a workout
+    private void populateFromWorkout(Workout _workout){
+        for(Exercise exercise : _workout.getExercises()){
+            Exercise clone = cloneExercise(exercise);
+
+            mToExerciseList.add(clone);
+            mToExerciseAdapter.notifyItemInserted(mFromExerciseList.size());
+        }
+
+        mFromWorkoutAdapter.notifyDataSetChanged();
+    }
 
     // Reads the exercises from a txt file and then builds their models, places them in the database and indexes them for search
     public void seedExercisesFromTextFile(){
@@ -603,8 +615,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                 String pushId = pushRef.getKey();
                 exercise.setPushId(pushId);
                 pushRef.setValue(exercise);
-
-
             }
 
         } catch (IOException e) {
