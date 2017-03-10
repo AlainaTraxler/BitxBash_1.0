@@ -174,11 +174,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
     }
 
     private void saveRoutine(){
-//        Dialog dialog = new Dialog(mContext);
-//        dialog.setContentView(R.layout.routine_dialog);
-//        dialog.setTitle("Name routine");
-//
-//        dialog.show();
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Name routine");
 
@@ -228,7 +223,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                                 dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_ROUTINES).child(mEditId).setValue(workout);
                                 Toast.makeText(mContext, "Edits saved", Toast.LENGTH_SHORT).show();
                                 endEdit();
-                                fetchRoutines();
                             }else{
                                 DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_ROUTINES).push();
                                 workout.setPushId(pushRef.getKey());
@@ -237,6 +231,10 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
                             }
 
                             dialog.dismiss();
+                        }
+
+                        if(mSpinner.getSelectedItemPosition() == 2){
+                            fetchRoutines();
                         }
                     }
                 });
@@ -254,7 +252,6 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
             dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).child(mEditId).setValue(workout);
             Toast.makeText(MainActivity.this, "Edits saved", Toast.LENGTH_SHORT).show();
             endEdit();
-            fetchWorkouts();
         }else{
             DatabaseReference pushRef = dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).push();
             workout.setPushId(pushRef.getKey());
