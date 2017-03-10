@@ -261,6 +261,10 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
             pushRef.setValue(workout);
             Toast.makeText(MainActivity.this, "Workout completed", Toast.LENGTH_SHORT).show();
         }
+
+        if(mSpinner.getSelectedItemPosition() == 1){
+            fetchWorkouts();
+        }
     }
 
     public void splitSets(int position){
