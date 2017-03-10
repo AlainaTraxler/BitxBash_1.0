@@ -449,6 +449,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mFromExerciseAdapter = new FromExerciseAdapter(getApplicationContext(), filterExercises(query));
         mRecyclerView_From.setHasFixedSize(true);
         mRecyclerView_From.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView_From.setAdapter(null);
         mRecyclerView_From.setAdapter(mFromExerciseAdapter);
     }
 
@@ -456,6 +457,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         mFromWorkoutAdapter = new FromWorkoutAdapter(getApplicationContext(), filterWorkouts(query));
         mRecyclerView_From.setHasFixedSize(true);
         mRecyclerView_From.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView_From.setAdapter(null);
         mRecyclerView_From.setAdapter(mFromWorkoutAdapter);
     }
 
