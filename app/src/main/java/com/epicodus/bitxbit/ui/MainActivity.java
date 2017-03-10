@@ -158,7 +158,7 @@ public class MainActivity extends AuthListenerActivity implements View.OnClickLi
         }else if(view == mFAB_Delete){
             if(mEditType.equals(Constants.TYPE_WORKOUT)){
                 dbRef.child(Constants.DB_USERS).child(userId).child(Constants.DB_WORKOUTS).child(mEditId).removeValue();
-                if(mSpinner.getSelectedItemPosition() == 2){
+                if(mSpinner.getSelectedItemPosition() == 1){
                     fetchWorkouts();
                 }
                 Toast.makeText(mContext, "Workout deleted", Toast.LENGTH_SHORT).show();
